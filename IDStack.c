@@ -33,13 +33,11 @@ void pop(){
 	free(tempHolder)
 	stack.size--;
 }
-void search(tToken tk, int){
-	int pos;	//position in stack
-	eElement* element = stack.top
-	
-	for(pos = 0; pos < stack.size; pos++){
-		if(strcmp(tk.tokenInstance, element->tk.instance == 0){}
-		element = element->next;
-	}
-	
+void searchvar(tToken tk){
+	int pos;
+
+}
+void search(tToken tk){
+	int pos;
+
 }

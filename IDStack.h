@@ -12,4 +12,5 @@ typedef struct sStack{
 }sStack;
 void push(tToken);
 void pop();
-void search(tToken, int);
+void searchvar(tToken);
+void search(tToken);
