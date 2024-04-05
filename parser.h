@@ -36,5 +36,5 @@ node* vars(Ttoken* tk, FILE* file, char* c, int* row, int* col);
 node* block(Ttoken* tk, FILE* file, char* c, int* row, int* col);
 node* func(Ttoken* tk, FILE* file, char* c, int* row, int* col);
 node* program(Ttoken* tk, FILE* file, char* c, int* row, int* col);
-void parser(FILE* file);
+node* parser(FILE* file);
 #endif

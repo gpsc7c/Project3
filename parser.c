@@ -7,7 +7,7 @@
 #include "ttoken.h"
 #include "parser.h"
 #include "node.h"
-#include "tree.h"
+#include "tree.c"
 ///////enumeration reminder
 //enum tokenTypes{IDTK, INTTK, ASSIGNTK, GREATTK, LESSTK, ISEQUALTK, NOTEQUALTK, COLONTK, COLONEQLTK, PLUSTK, MINUSTK, MULTIPLYTK, DIVIDETK, EXPONTK, DOTTK, OPENPARENTK, CLOSEPARENTK, COMMATK, OPENCURLTK, CLOSECURLTK, SEMICOLONTK, OPENSQUARETK, CLOSESQUARETK, ORTK, ANDTK, STARTTK, STOPTK, WHILETK, REPEATTK, UNTILTK, LABELTK, RETURNTK, CINTK, COUTTK, TAPETK, JUMPTK, IFTK, THENTK, PICKTK, CREATETK, SETTK, FUNCTK, EOFTK};
 #ifndef PARSER_C
@@ -509,7 +509,7 @@ node* program(Ttoken* tk, FILE* file, char* c, int* row, int* col){
 	return NULL;
 }
 //calls the parser to generate the tree
-void parser(FILE* file){
+node* parser(FILE* file){
 	//create malloc'd variables to send to other functions
 	int *col = malloc(sizeof(int));
 	int *row = malloc(sizeof(int));
@@ -521,6 +521,6 @@ void parser(FILE* file){
 	node* root;
 	*tk = scanner(file, c, row, col);
 	root = program(tk, file, c, row, col);
-	printPreOrder(root, depth);
+	return root;
 }
 #endif

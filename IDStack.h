@@ -10,7 +10,7 @@ typedef struct sStack{
 	int count;
 	eElement* top;
 }sStack;
+void stackSet(sStack);
 void push(tToken);
 void pop();
-void searchvar(tToken);
-void search(tToken);
+int find(tToken, int);

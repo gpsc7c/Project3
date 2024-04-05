@@ -4,6 +4,7 @@
 #include <string.h>
 #include "scanner.h"
 #include "parser.h"
+#include "testTree.h"
 //standard help function
 void help(){
 	fprintf(stdout, "This program exists as a scanner to find tokens for\n"
@@ -59,6 +60,9 @@ int main(int argc, char** argv){
 			return -1;
 		}
 	}
-	parser(fHandle);
+	node* root;
+	root = parser(fHandle);
+	statSem(root, NULL);
+	fclose(fHandle);
 	return 0;
 }
