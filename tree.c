@@ -156,14 +156,21 @@ void chkNode(node* dataNode, int* IDCount){
 		}
 	}
 	else if(strcmp(dataNode->tTitle, nonterms[11])||strcmp(dataNode->tTitle, nonterms[22])||strcmp(dataNode->tTitle, nonterms[15])||strcmp(dataNode->tTitle, nonterms[26])||strcmp(dataNode->tTitle, nonterms[27])){
+		int dist;
 		if(dataNode->one->tk != NULL){
-			int dist = find(dataNode->one->tk, element);
+			dist = find(dataNode->one->tk, element);
+			
 		}
 		else {
-			int dist = find(dataNode->two->tk, element);
+			dist = find(dataNode->two->tk, element);
 		}
 		if(dist == -1){
-			
+			fprintf(stderr, "\nERROR: tree.c: chkNode: Identifier "
+					"%s on line %d at char %d has not been"
+					" Initialized!\n", 
+					element->tk.tokenInstance, 
+					element->tk.row, element->tk.column);
+			exit(); 
 		}
 	}
 
