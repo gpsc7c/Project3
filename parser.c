@@ -7,12 +7,12 @@
 #include "ttoken.h"
 #include "parser.h"
 #include "node.h"
-#include "tree.c"
+#include "tree.h"
 ///////enumeration reminder
-//enum tokenTypes{IDTK, INTTK, ASSIGNTK, GREATTK, LESSTK, ISEQUALTK, NOTEQUALTK, COLONTK, COLONEQLTK, PLUSTK, MINUSTK, MULTIPLYTK, DIVIDETK, EXPONTK, DOTTK, OPENPARENTK, CLOSEPARENTK, COMMATK, OPENCURLTK, CLOSECURLTK, SEMICOLONTK, OPENSQUARETK, CLOSESQUARETK, ORTK, ANDTK, STARTTK, STOPTK, WHILETK, REPEATTK, UNTILTK, LABELTK, RETURNTK, CINTK, COUTTK, TAPETK, JUMPTK, IFTK, THENTK, PICKTK, CREATETK, SETTK, FUNCTK, EOFTK};
 #ifndef PARSER_C
 #define PARSER_C
 //generic error handler, forces exit after output
+char nonterms[28][11] = {"TERMINAL", "<program>", "<func>", "<block>", "<vars>", "<facvars>", "<expr>", "<N>", "<N1>", "<A>", "<M>", "<R>", "<stats>", "<mStat>", "<stat>", "<in>", "<out>", "<if>", "<pick>", "<pickbody>", "<loop1>", "<loop2>", "<assign>", "<RBracket>", "<RTriplet>", "<R0>", "<label>", "<goto>"};
 void error(int tkDesired, int tkReceived, int row, int col){
 	char IDtags[47][25] = { /*0*/"Identifier", "Integer", "=", ">", "<", /*5*/"==", "=!=", ":", ":=", "+", /*10*/"-", "*", "/", "^", ".", /*15*/"(", ")", ",", "{", "}", /*20*/";", "[", "]", "or", "and", /*25*/"start", "stop", "while", "repeat", "until", /*30*/"label", "return", "cin", "cout", "tape", /*35*/"jump", "if", "then", "pick", "create", /*40*/"set", "func", "EOF", "<, >, ==, =!=, or ...", "int, ID, or parentheses", /*45*/": or :=" ,"unknown"};
 	fprintf(stderr, "\nAn error has occurred: '%s' token was expected,\n"
@@ -444,7 +444,7 @@ node* vars(Ttoken* tk, FILE* file, char* c, int* row, int* col){
 			if(tk->ID == SEMICOLONTK){
 				nNode->three = newTermNode(tk);
 				*tk = scanner(file, c, row, col);
-				vars(tk, file, c, row, col);
+				nNode->four = vars(tk, file, c, row, col);
 				return nNode;
 			}
 		}
@@ -513,7 +513,7 @@ node* parser(FILE* file){
 	//create malloc'd variables to send to other functions
 	int *col = malloc(sizeof(int));
 	int *row = malloc(sizeof(int));
-	int depth = 0;
+	//int depth = 0;	//variable for testing parse tree structure
 	Ttoken* tk = malloc(sizeof(Ttoken));
 	*col = 0;
 	*row = 1;

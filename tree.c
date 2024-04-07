@@ -1,15 +1,11 @@
-/*
- * tree.h
- *
- *  Created on: Jan 20, 2024
- *      Author: Greg
- */
-#ifndef TREE_H_
-#define TREE_H_
+#ifndef TREE_C_
+#define TREE_C_
 #include "node.h"
 #include <stdio.h>
 #include <string.h>
-char nonterms[28][11] = {"TERMINAL", "<program>", "<func>", "<block>", "<vars>", "<facvars>", "<expr>", "<N>", "<N1>", "<A>", "<M>", "<R>", "<stats>", "<mStat>", "<stat>", "<in>", "<out>", "<if>", "<pick>", "<pickbody>", "<loop1>", "<loop2>", "<assign>", "<RBracket>", "<RTriplet>", "<R0>", "<label>", "<goto>"};
+#include "IDStack.h"
+#include "tree.h"
+char testnonterms[28][11] = {"TERMINAL", "<program>", "<func>", "<block>", "<vars>", "<facvars>", "<expr>", "<N>", "<N1>", "<A>", "<M>", "<R>", "<stats>", "<mStat>", "<stat>", "<in>", "<out>", "<if>", "<pick>", "<pickbody>", "<loop1>", "<loop2>", "<assign>", "<RBracket>", "<RTriplet>", "<R0>", "<label>", "<goto>"};
 char* tokenNames[43] = {"IDTK", "INTTK", "ASSIGNTK", "GREATTK", "LESSTK", "ISEQUALTK", "NOTEQUALTK", "COLONTK", "COLONEQLTK", "PLUS", "MINUSTK", "MULTIPLYTK", "DIVIDETK", "EXPONTK", "DOTTK", "OPENPARENTK", "CLOSEPARENTK", "COMMATK", "OPENCURLTK", "CLOSECURLTK", "SEMICOLONTK", "OPENSQUARETK", "CLOSESQUARETK", "ORTK", "ANDTK", "STARTTK", "STOPTK", "WHILETK", "REPEATTK", "UNTILTK", "LABELTK", "RETURNTK", "CINTK", "COUTTK", "TAPETK", "JUMPTK", "IFTK", "THENTK", "PICKTK", "CREATETK", "SETTK", "FUNCTK", "EOFTK"};
 
 struct node* newTermNode(Ttoken* tk){ // Allocate memory for new node
@@ -26,8 +22,8 @@ struct node* newTermNode(Ttoken* tk){ // Allocate memory for new node
     	nNode->tk->row = tk->row;
     	nNode->tk->column = tk->column;
 	
-	for(i = 0; i < strlen(nonterms[0]); i++){
-    		nNode->tTitle.nonterm[i] = nonterms[0][i];
+	for(i = 0; i < strlen(testnonterms[0]); i++){
+    		nNode->tTitle.nonterm[i] = testnonterms[0][i];
 	}
 	for(; i <=10; i++){
     		nNode->tTitle.nonterm[10] = '\0';
@@ -78,11 +74,6 @@ void printPreOrder(struct node* dataNode, int depth){
 	printPreOrder(dataNode->three, depth+1);
 	printPreOrder(dataNode->four, depth+1);
 }
-void preorderStatSem(node* dataNode, int varCount){
-	if
-
-
-}
 void deleteTree(struct node* dataNode){
 	if(dataNode == NULL){
 		fprintf(stderr, "\nERROR: tree.h: deleteTree: tree does not exist\n"); 
@@ -107,18 +98,27 @@ void deleteTree(struct node* dataNode){
 	}
 	free(dataNode);
 }
+void preStat(node *dataNode, int* IDCount){
+	if(strcmp(dataNode->tTitle.nonterm, testnonterms[0])){
+		chkNode(dataNode, IDCount);
+		statSem(dataNode->one, IDCount);
+		statSem(dataNode->two, IDCount);
+		statSem(dataNode->three, IDCount);
+		statSem(dataNode->four, IDCount);
+	}
+}
 void statSem(node* dataNode, int* IDCount){
 	if(dataNode != NULL){
-		if(!strcmp(dataNode->tTitle, nonterms[1]) || !strcmp(dataNode->tTitle, nonterms[3])){
+		if(!strcmp(dataNode->tTitle.nonterm, testnonterms[1]) || !strcmp(dataNode->tTitle.nonterm, testnonterms[3])){
 			int i;
-			int *IDCount = (int*) malloc(sizeof(int));
-			*IDCount = 0;
+			int *newIDCount = (int*) malloc(sizeof(int));
+			*newIDCount = 0;
 			
-			preStat(dataNode, IDCount);
-			for( i = 0; i < *IDCount; i++){
+			preStat(dataNode, newIDCount);
+			for( i = 0; i < *newIDCount; i++){
 				pop();
 			}
-			free(IDCount);
+			free(newIDCount);
 		}
 		else{
 			preStat(dataNode, IDCount);
@@ -126,53 +126,53 @@ void statSem(node* dataNode, int* IDCount){
 	}
 }
 
-void preStat(node *dataNode, int* IDCount){
-	chkNode(dataNode, IDCount);
-	statSem(dataNode->one, IDCount);
-	statSem(dataNode->two, IDCount);
-	statSem(dataNode->three, IDCount);
-	statSem(dataNode->four, IDCount);
-
-}
 
 void chkNode(node* dataNode, int* IDCount){
-	eElement* element = (eElement*)malloc(sizeof(eElement));
-	if(*IDCount > 0 && (strcmp(dataNode->tTitle, nonterms[5]) || strcmp(dataNode->tTitle, nonterms[2]))){
+	int* row = (int*)malloc(sizeof(int));
+	int* col = (int*)malloc(sizeof(int));
+	if(strcmp(dataNode->tTitle.nonterm, testnonterms[5])==0 || strcmp(dataNode->tTitle.nonterm, testnonterms[2]) == 0){
 		if(dataNode->two->tk->ID == IDTK){
-			int dist = find(dataNode->tk, element);
-			if( dist != -1 && *IDCount - dist != 0){
+			int dist = find(dataNode->two->tk, row, col);
+			if( dist != -1){
 				fprintf(stderr, "\nERROR: IDStack.c: searchVar:"
 					" Variable of ID '%s' already defined"
 					" in this scope.\n"
-					": Initial definition on line %d at "
+					": Repeat definition on line %d at "
 					"char %d\n"
-					": Repeat definition on line "
-					"%d at char %d."
-					tk.tokenInstance, tk.row, tk.column,
-					element->tk.row, element->tk.column);
-					exit();	
+					": Initial definition on line "
+					"%d at char %d.", dataNode->two->tk->tokenInstance, 
+					dataNode->two->tk->row, dataNode->two->tk->column,
+					*row, *col);
+				exit(-1);	
 			}
 			push(dataNode->two->tk);
+			*IDCount += 1;
 		}
 	}
-	else if(strcmp(dataNode->tTitle, nonterms[11])||strcmp(dataNode->tTitle, nonterms[22])||strcmp(dataNode->tTitle, nonterms[15])||strcmp(dataNode->tTitle, nonterms[26])||strcmp(dataNode->tTitle, nonterms[27])){
-		int dist;
-		if(dataNode->one->tk != NULL){
-			dist = find(dataNode->one->tk, element);
-			
+	else if(strcmp(dataNode->tTitle.nonterm, testnonterms[11])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[22])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[15])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[26])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[27])==0){
+		int dist = -2;
+		char* temp;
+		int temprow = -2;
+		int tempcol = -2;
+		if(dataNode->one->tk->ID == 0){
+			dist = find(dataNode->one->tk, row, col);
+			temp = dataNode->one->tk->tokenInstance;
+			temprow = dataNode->one->tk->row;
+			tempcol = dataNode->one->tk->column;
 		}
-		else {
-			dist = find(dataNode->two->tk, element);
+		else if(dataNode->two != NULL && dataNode->two->tk != NULL && dataNode->two->tk->ID == 0){
+			dist = find(dataNode->two->tk, row, col);
+			temp = dataNode->two->tk->tokenInstance;
+			temprow = dataNode->two->tk->row;
+			tempcol = dataNode->two->tk->column;
 		}
 		if(dist == -1){
 			fprintf(stderr, "\nERROR: tree.c: chkNode: Identifier "
 					"%s on line %d at char %d has not been"
 					" Initialized!\n", 
-					element->tk.tokenInstance, 
-					element->tk.row, element->tk.column);
-			exit(); 
+					temp,temprow,tempcol);
+			exit(-1); 
 		}
 	}
-
 }
 #endif

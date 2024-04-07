@@ -1,5 +1,4 @@
 //p2g11, simplest possible program
-create x;
 tape
 {
 	create x;

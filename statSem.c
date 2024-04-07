@@ -4,7 +4,9 @@
 #include <string.h>
 #include "scanner.h"
 #include "parser.h"
-#include "testTree.h"
+#include "tree.h"
+#include "IDStack.h"
+#include "node.h"
 //standard help function
 void help(){
 	fprintf(stdout, "This program exists as a scanner to find tokens for\n"
@@ -62,6 +64,7 @@ int main(int argc, char** argv){
 	}
 	node* root;
 	root = parser(fHandle);
+	fprintf(stdout,"performing static semantics checks on file.\n");
 	statSem(root, NULL);
 	fclose(fHandle);
 	return 0;
