@@ -54,7 +54,7 @@ int main(int argc, char** argv){
 		fHandle = stdin;
 		fName = "output";
 	}else{//takes file input
-		printf("\nIntaking file %s\n", fName);
+		printf("Intaking file %s\n", fName);
 		fHandle = fopen(fName, "r");
 		if(fHandle == NULL){
 			fprintf(stderr, "ERROR: scanner.c: main: File does not" 
@@ -63,9 +63,13 @@ int main(int argc, char** argv){
 		}
 	}
 	node* root;
+	fprintf(stdout,"parsing file.\n");
 	root = parser(fHandle);
-	fprintf(stdout,"performing static semantics checks on file.\n");
+	fprintf(stdout,"parsing file complete.\n");
+	fprintf(stdout,"performing static semantics check on file.\n");
 	statSem(root, NULL);
+	fprintf(stdout,"performing static semantics check on file complete.\n");
+	deleteTree(root);
 	fclose(fHandle);
 	return 0;
 }

@@ -1,15 +1,38 @@
-Invoked with frontEnd [file]
+Invoked with statSem [file]
 Author: Gregory Shelton
-Started (DD/MM/YYYY): 12/03/2024
+Started (DD/MM/YYYY): 28/03/2024
 CLASS:   Code Translation
 PROFESSOR: Mark Hauschild
-PROJECT: Program Translation Project 2 parser
-PURPOSE: Create a parser using the scanner from previous project designed to be used in a compiler
-HELP:	 Command is -h, or putting in more (or less)  information than is necessary.
-
+PROJECT: Program Translation Project 3 Static Semantics
+PURPOSE: Create a variable usage check using the scanner and parser from previous project designed to be used in a compiler.
+HELP:	 Command is -h, or putting in more (or less) information than is necessary.
 COMPILATION METHOD: Makefile
 	 Compile with make, remove compiled files with make clean
 	 invoke with "./scanner [filename]"
+FILES:
+	IDStack.h: The location of IDStack.S's function definitions and the 
+		   type definitions for sStack and eElement.
+	IDStack.c: The location of the find, push, and pop functions for the
+		   stack.
+	tree.h:    Has been expanded to include the new function definitions
+		   for static semantics that utilize the parse tree.
+	tree.c:    Has been expanded to include the new functions for static 
+		   semantics that utilize the parse tree as well as a second
+		   and frankly unnecessary reworked definition of the node 
+		   titles to assuage otherwise unsolved gdb difficulties.
+	p2t001,
+	p3t011,
+	p3t012:    All are tests for absolute most basic errors (001,011) and
+		   a success state (012
+	p3t013:    Test with far more depth that checks for all commands
+		   using variables
+	p3t014:    As above, but tests for declaration in a deeper loop (should
+		   fail)
+		
+
+
+
+parser information
 FILES:	 
 	frontEnd.c: The file the program starts execution in.
 	Makefile:   The make file.
@@ -27,6 +50,7 @@ FILES:
 		    tree, printing it, and deleting it
 	parser.h:   Function definitions for parser.
 	parser.c:   Actual parser, BNF structure, and error handling.
+	tests folder:
 	p2t001:     Test for most basic possible program
 	p2t002:     Test for var declaration and cout, which is more complex 
 		    than cin.
@@ -46,18 +70,6 @@ filter requires row and column be passed in as pointers to integers
 scanner.h function testScan is the scan tester
 An Excel spreadsheet version of the FSA table can be found in FSAChart.xlsx, 
 but would need to be removed from the server to be checked.
-
-Author: Gregory Shelton
-Started (DD/MM/YYYY): 13/02/2024
-CLASS:   Code Translation
-PROFESSOR: Mark Hauschild
-PROJECT: Program Translation Project 1 Scanner
-PURPOSE: Create a scanner with lookahead designed to be used in a compiler
-HELP:	 Command is -h, or putting in more (or less)  information than is necessary.
-
-COMPILATION METHOD: Makefile
-	 Compile with make, remove compiled files with make clean
-	 invoke with "./scanner [filename]"
 FILES:	 
 	 scanner.c is the location of main, arg intake, and help function
 	 scanner.h is the location of the scanner with lookahead, filter, and scanner testing function.
@@ -68,12 +80,4 @@ FILES:
 	 .txt files
 	 aside from readme, these are tests, but readme can also function as a test. 
 	  One which should fail on line 19, character 15
-	 test1.txt tests ID tokens
-	 test2.txt tests bad ID token
-	 test3.txt tests a bad non-ID token
-	 test4.txt tests all symbol tokens
-	 testkw.txt tests all keywords
-	 multiline.txt tests over multiple lines
-	 comment.txt tests comments
-	 teof.txt was used for testing EOF bugs.
 

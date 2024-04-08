@@ -74,6 +74,9 @@ void printPreOrder(struct node* dataNode, int depth){
 	printPreOrder(dataNode->three, depth+1);
 	printPreOrder(dataNode->four, depth+1);
 }
+/////////////////////////////////////
+//Function to delete the parse tree//
+/////////////////////////////////////
 void deleteTree(struct node* dataNode){
 	if(dataNode == NULL){
 		fprintf(stderr, "\nERROR: tree.h: deleteTree: tree does not exist\n"); 
@@ -91,13 +94,15 @@ void deleteTree(struct node* dataNode){
 	if(dataNode->four != NULL){
 		deleteTree(dataNode->four);
 	}
-	free(dataNode->tTitle.nonterm);
 	if(dataNode->tk != NULL){
-		free(dataNode->tk->tokenInstance);
 		free(dataNode->tk);
 	}
 	free(dataNode);
 }
+////////////////////////////////////////////////////////////
+//Steps through the node branches after checking nodes for//
+//relevant data in preorder format//////////////////////////
+////////////////////////////////////////////////////////////
 void preStat(node *dataNode, int* IDCount){
 	if(strcmp(dataNode->tTitle.nonterm, testnonterms[0])){
 		chkNode(dataNode, IDCount);
@@ -107,7 +112,11 @@ void preStat(node *dataNode, int* IDCount){
 		statSem(dataNode->four, IDCount);
 	}
 }
+////////////////////////////////////////////////////////////////////////
+//checks for starts of local and global scopes, else return to prestat//
+////////////////////////////////////////////////////////////////////////
 void statSem(node* dataNode, int* IDCount){
+	//checking for '<program>' and '<block>'
 	if(dataNode != NULL){
 		if(!strcmp(dataNode->tTitle.nonterm, testnonterms[1]) || !strcmp(dataNode->tTitle.nonterm, testnonterms[3])){
 			int i;
@@ -126,13 +135,18 @@ void statSem(node* dataNode, int* IDCount){
 	}
 }
 
-
+//////////////////////////////////////////////////////////
+////Function to check each relevant node for data errors//
+//////////////////////////////////////////////////////////
 void chkNode(node* dataNode, int* IDCount){
-	int* row = (int*)malloc(sizeof(int));
-	int* col = (int*)malloc(sizeof(int));
+	int* row = (int*)malloc(sizeof(int));//var to hold row from stack
+	int* col = (int*)malloc(sizeof(int));//var to hold column from stack
+	//checks for declarations of func or variables 
 	if(strcmp(dataNode->tTitle.nonterm, testnonterms[5])==0 || strcmp(dataNode->tTitle.nonterm, testnonterms[2]) == 0){
 		if(dataNode->two->tk->ID == IDTK){
+			//search stack
 			int dist = find(dataNode->two->tk, row, col);
+			//if found, error out due to conflict
 			if( dist != -1){
 				fprintf(stderr, "\nERROR: IDStack.c: searchVar:"
 					" Variable of ID '%s' already defined"
@@ -145,27 +159,34 @@ void chkNode(node* dataNode, int* IDCount){
 					*row, *col);
 				exit(-1);	
 			}
+			//else push onto stack
 			push(dataNode->two->tk);
 			*IDCount += 1;
 		}
 	}
+	//looks for any occasions where vars might be used
 	else if(strcmp(dataNode->tTitle.nonterm, testnonterms[11])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[22])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[15])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[26])==0||strcmp(dataNode->tTitle.nonterm, testnonterms[27])==0){
+		//variables necessary to recover error data
 		int dist = -2;
 		char* temp;
 		int temprow = -2;
 		int tempcol = -2;
+		//checks for "ID first" nodes
 		if(dataNode->one->tk->ID == 0){
 			dist = find(dataNode->one->tk, row, col);
 			temp = dataNode->one->tk->tokenInstance;
 			temprow = dataNode->one->tk->row;
 			tempcol = dataNode->one->tk->column;
 		}
+		//tests for "ID second" nodes, which encompasses all other 
+		//valid nodes
 		else if(dataNode->two != NULL && dataNode->two->tk != NULL && dataNode->two->tk->ID == 0){
 			dist = find(dataNode->two->tk, row, col);
 			temp = dataNode->two->tk->tokenInstance;
 			temprow = dataNode->two->tk->row;
 			tempcol = dataNode->two->tk->column;
 		}
+		//if not found error out
 		if(dist == -1){
 			fprintf(stderr, "\nERROR: tree.c: chkNode: Identifier "
 					"%s on line %d at char %d has not been"
